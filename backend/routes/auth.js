@@ -59,12 +59,21 @@ router.post('/login', [
 
     const { email, password } = req.body;
 
+    // 🔥 EXTRA SAFETY
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
     const user = await User.findOne({ email }).select('+password');
-    if (!user) {
+
+    // 🔥 USER CHECK
+    if (!user || !user.password) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    // 🔥 SAFE PASSWORD COMPARE
     const isMatch = await user.comparePassword(password);
+
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -90,7 +99,7 @@ router.post('/login', [
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Login error:', error.message);
     res.status(500).json({ error: 'Server error during login' });
   }
 });
