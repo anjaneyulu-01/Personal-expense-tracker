@@ -63,6 +63,9 @@ app.use((err, req, res, next) => {
   });
 });
 
+app.get('/', (req, res) => {
+  res.send('🚀 Expense Tracker API is running');
+});
 // 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
@@ -85,5 +88,4 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.error('❌ MongoDB connection error:', err.message);
   process.exit(1);
 });
-
 module.exports = app;
